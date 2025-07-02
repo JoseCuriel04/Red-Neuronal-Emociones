@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reconocimiento de Emociones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .nav-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .train-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .predict-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .nav-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Reconocimiento de Emociones</h1>
+    </header>
+    
+    <div class="nav-buttons">
+        <a href="{{ url_for('entrenar') }}" class="nav-button train-btn">Entrenar Modelo</a>
+        <a href="{{ url_for('predecir') }}" class="nav-button predict-btn">Predecir Emoción</a>
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>Sistema desarrollado con Flask y TensorFlow</p>
+    </footer>
+</body>
+</html>

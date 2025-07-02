@@ -1,0 +1,135 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="container">
+    <h2>Entrenamiento del Modelo de Reconocimiento de Emociones</h2>
+    
+    <!-- Panel de Estado del Dataset -->
+    <div class="dataset-status">
+        <h3>Estado Actual del Dataset</h3>
+        <div class="stats-container">
+            {% if emociones %}
+                <p><strong>Emociones registradas:</strong> {{ emociones|length }}</p>
+                <ul class="emotion-list">
+                    {% for emocion in emociones %}
+                        {% set count = obtener_conteo_imagenes(emocion) %}
+                        <li>
+                            {{ emocion }}: {{ count }} imágenes
+                            <span class="{% if count < 10 %}warning{% else %}success{% endif %}">
+                                ({% if count < 10 %}Mínimo no alcanzado{% else %}Listo{% endif %})
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p class="requirements">Requisitos: Mínimo 10 imágenes por emoción</p>
+            {% else %}
+                <p class="warning">No hay emociones registradas aún. Sube imágenes para comenzar.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Formulario de Subida -->
+    <div class="upload-section">
+        <h3>Subir Nuevas Imágenes</h3>
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            <div class="form-group">
+                <label for="emocion">Selecciona emoción:</label>
+                <select name="emocion" id="emocion" required>
+                    <option value="">-- Selecciona --</option>
+                    <option value="feliz">Feliz 😊</option>
+                    <option value="triste">Triste 😢</option>
+                    <option value="enojado">Enojado 😠</option>
+                    <option value="sorpresa">Sorpresa 😲</option>
+                    <option value="neutral">Neutral 😐</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="files">Selecciona imágenes (múltiples):</label>
+                <input type="file" id="files" name="files" multiple accept="image/*" required>
+                <small>Solo se aceptan imágenes (JPG, PNG)</small>
+            </div>
+            
+            <button type="submit" name="action" value="upload" class="btn-upload">
+                Subir Imágenes
+            </button>
+        </form>
+    </div>
+
+    <!-- Formulario de Entrenamiento -->
+    <div class="train-section">
+        <h3>Entrenar Modelo</h3>
+        <form method="POST" class="train-form">
+            <div class="requirements-box">
+                <p>Antes de entrenar asegúrate de:</p>
+                <ul>
+                    <li>Tener al menos 2 emociones registradas</li>
+                    <li>Cada emoción tiene mínimo 10 imágenes</li>
+                    <li>Las imágenes son de rostros claramente visibles</li>
+                </ul>
+            </div>
+            <button type="submit" name="action" value="train" class="btn-train" 
+                    {% if not emociones or emociones|length < 2 %}disabled{% endif %}>
+                Iniciar Entrenamiento
+            </button>
+        </form>
+    </div>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>
+
+<style>
+    .dataset-status {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+    
+    .emotion-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+    }
+    
+    .warning {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .success {
+        color: #28a745;
+    }
+    
+    .btn-train {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .btn-train:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+    
+    .requirements-box {
+        background: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
