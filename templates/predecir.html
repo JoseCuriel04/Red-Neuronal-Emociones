@@ -1,149 +1,13 @@
 {% extends "index.html" %}
 {% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-<style>
-    body {
-        background-color: #f8f9fa;
-        font-family: 'Arial', sans-serif;
-    }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    h2 {
-        color: #6e8efb;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .upload-card, .result-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        padding: 25px;
-        margin-bottom: 20px;
-        animation: fadeIn 1s ease-in-out;
-    }
-    .btn-upload, .btn-train {
-        background-color: #4ECDC4;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .btn-upload:hover, .btn-train:hover {
-        background-color: #39b5a1;
-    }
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        color: #495057;
-    }
-    .form-group input[type="file"] {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-        background-color: #f8f9fa;
-        transition: border-color 0.3s ease;
-    }
-    .form-group input[type="file"]:focus {
-        border-color: #4ECDC4;
-        outline: none;
-    }
-    .file-info {
-        font-size: 0.875rem;
-        color: #6c757d;
-        display: block;
-        margin-top: 0.5rem;
-    }
-    .btn-upload {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .upload-area {
-        border: 2px dashed #dee2e6;
-        border-radius: 12px;
-        padding: 2.5rem;
-        text-align: center;
-        transition: all 0.3s;
-        cursor: pointer;
-    }
-    .upload-area:hover {
-        border-color: #007bff;
-        background: #f8f9fa;
-    }
-    .analyzed-image {
-        max-height: 300px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transition: transform 0.3s;
-    }
-    .analyzed-image:hover {
-        transform: scale(1.03);
-    }
-    .image-container {
-        position: relative;
-        display: inline-block;
-    }
-    .image-overlay {
-        position: absolute;
-        bottom: 10px;
-        left: 0;
-        right: 0;
-        text-align: center;
-    }
-    .emotion-badge {
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        background: rgba(0,0,0,0.7);
-    }
-    .result-details {
-        padding: 1.5rem;
-        background: #f8f9fa;
-        border-radius: 12px;
-    }
-    .confidence-meter {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    .predict-btn {
-        padding: 0.8rem 2.5rem;
-        font-size: 1.1rem;
-        border-radius: 50px;
-        transition: all 0.3s;
-    }
-    .predict-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @media (max-width: 768px) {
-        .upload-area {
-            padding: 1.5rem;
-        }
-    }
-</style>
-
-<div class="container animate__animated animate__fadeIn">
-    <h2>🔍 Analizador de Expresiones Faciales</h2>
-    <p class="lead text-muted" style="text-align: center;">Sube una imagen facial para detectar la emoción predominante</p>
-
+<div class="container prediction-container">
+    <div class="text-center header-section">
+        <h2 class="mb-3">🔍 Analizador de Expresiones Faciales</h2>
+        <p class="lead text-muted">Sube una imagen facial para detectar la emoción predominante</p>
+    </div>
+    
     <!-- Sección de Subida -->
-    <div class="upload-card">
+    <div class="card upload-card shadow-lg">
         <div class="card-body">
             <form method="POST" enctype="multipart/form-data" id="predictionForm">
                 <div class="form-group">
@@ -161,46 +25,46 @@
                         <div id="filePreview" class="mt-3"></div>
                     </div>
                 </div>
-
+                
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn-upload" id="submitBtn">
+                    <button type="submit" class="btn btn-primary btn-lg predict-btn" id="submitBtn">
                         <i class="fas fa-brain"></i> Analizar Emoción
                     </button>
                 </div>
             </form>
         </div>
     </div>
-
+    
     <!-- Sección de Resultados -->
     {% if emocion %}
-    <div class="result-card">
+    <div class="card result-card shadow-lg mt-4">
         <div class="card-body">
             <h3 class="text-center mb-4"><i class="fas fa-chart-bar"></i> Resultado del Análisis</h3>
-
+            
             <div class="row align-items-center">
                 <!-- Columna de Imagen -->
                 <div class="col-lg-5 text-center mb-4 mb-lg-0">
                     <div class="image-container">
-                        <img src="{{ url_for('static', filename=imagen_url) }}"
-                             class="img-fluid analyzed-image rounded"
+                        <img src="{{ url_for('static', filename=imagen_url) }}" 
+                             class="img-fluid analyzed-image rounded" 
                              alt="Imagen analizada">
                         <div class="image-overlay">
                             <span class="badge emotion-badge">{{ emocion|upper }}</span>
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Columna de Detalles -->
                 <div class="col-lg-7">
                     <div class="result-details">
                         <div class="confidence-meter">
                             <h4 class="mb-3">Nivel de Confianza:</h4>
                             <div class="progress" style="height: 30px;">
-                                <div class="progress-bar progress-bar-striped {{ 'bg-success' if confianza > 0.7 else 'bg-warning' }}"
-                                     role="progressbar"
+                                <div class="progress-bar progress-bar-striped {{ 'bg-success' if confianza > 0.7 else 'bg-warning' }}" 
+                                     role="progressbar" 
                                      style="width: {{ confianza * 100 }}%"
-                                     aria-valuenow="{{ confianza * 100 }}"
-                                     aria-valuemin="0"
+                                     aria-valuenow="{{ confianza * 100 }}" 
+                                     aria-valuemin="0" 
                                      aria-valuemax="100">
                                     {{ "%.1f"|format(confianza * 100) }}%
                                 </div>
@@ -211,7 +75,7 @@
                                 <small>Alta</small>
                             </div>
                         </div>
-
+                        
                         <div class="emotion-details mt-4">
                             <h4><i class="fas fa-info-circle"></i> Detalles:</h4>
                             <ul class="list-group">
@@ -233,10 +97,10 @@
                                 </li>
                             </ul>
                         </div>
-
+                        
                         {% if confianza < 0.5 %}
                         <div class="alert alert-warning mt-4">
-                            <i class="fas fa-exclamation-triangle"></i>
+                            <i class="fas fa-exclamation-triangle"></i> 
                             <strong>Nota:</strong> La confianza es baja. Para mejores resultados:
                             <ul class="mt-2">
                                 <li>Usa una foto frontal con buena iluminación</li>
@@ -248,7 +112,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="text-center mt-4">
                 <button class="btn btn-outline-primary" onclick="window.location.reload();">
                     <i class="fas fa-redo"></i> Realizar otro análisis
@@ -258,6 +122,102 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Estilos CSS -->
+<style>
+.prediction-container {
+    max-width: 900px;
+    padding: 2rem 1rem;
+}
+
+.header-section {
+    margin-bottom: 2.5rem;
+}
+
+.upload-card, .result-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #007bff;
+    background: #f8f9fa;
+}
+
+.analyzed-image {
+    max-height: 300px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.analyzed-image:hover {
+    transform: scale(1.03);
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.emotion-badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0,0,0,0.7);
+}
+
+.result-details {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.confidence-meter {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.predict-btn {
+    padding: 0.8rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    transition: all 0.3s;
+}
+
+.predict-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+}
+
+@media (max-width: 768px) {
+    .upload-area {
+        padding: 1.5rem;
+    }
+    
+    .header-section h2 {
+        font-size: 1.8rem;
+    }
+}
+</style>
 
 <!-- JavaScript Mejorado -->
 <script>
@@ -283,7 +243,7 @@ uploadArea.addEventListener('drop', (e) => {
     e.preventDefault();
     uploadArea.style.borderColor = '#dee2e6';
     uploadArea.style.backgroundColor = 'transparent';
-
+    
     if (e.dataTransfer.files.length) {
         fileInput.files = e.dataTransfer.files;
         updateFilePreview(e.dataTransfer.files[0]);
@@ -303,12 +263,12 @@ function updateFilePreview(file) {
         alert('El archivo es demasiado grande. Máximo 5MB permitido.');
         return;
     }
-
+    
     if (!file.type.match('image.*')) {
         alert('Por favor selecciona un archivo de imagen (JPEG o PNG)');
         return;
     }
-
+    
     const reader = new FileReader();
     reader.onload = (e) => {
         filePreview.innerHTML = `
