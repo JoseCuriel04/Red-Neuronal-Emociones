@@ -1,0 +1,8 @@
+# Datos de entrenamiento
+proyecto_emociones/dataset/train/*
+proyecto_emociones/dataset/test/*
+
+
+__pycache__/
+*.pyc
+.DS_Store
