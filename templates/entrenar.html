@@ -1,8 +1,150 @@
 {% extends "index.html" %}
 {% block content %}
-<div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #6e8efb;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .dataset-status, .upload-section, .train-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 20px;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .emotion-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .emotion-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        margin: 5px 0;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .warning {
+        color: #ff6b6b;
+        font-weight: bold;
+    }
+
+    .success {
+        color: #4ECDC4;
+        font-weight: bold;
+    }
+
+    .btn-upload, .btn-train {
+        background-color: #4ECDC4;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-upload:hover, .btn-train:hover {
+        background-color: #39b5a1;
+    }
+
+    .btn-train:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    .requirements-box {
+        background: #f1f7fa;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 5px solid #4ECDC4;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .form-group select, .form-group input[type="file"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group select:focus, .form-group input[type="file"]:focus {
+        border-color: #4ECDC4;
+        outline: none;
+    }
+
+    .file-info {
+        font-size: 0.875rem;
+        color: #6c757d;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .btn-upload {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .flash-message {
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .flash-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .flash-error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container animate__animated animate__fadeIn">
     <h2>Entrenamiento del Modelo de Reconocimiento de Emociones</h2>
-    
+
     <!-- Panel de Estado del Dataset -->
     <div class="dataset-status">
         <h3>Estado Actual del Dataset</h3>
@@ -42,13 +184,13 @@
                     <option value="neutral">Neutral 😐</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="files">Selecciona imágenes (múltiples):</label>
                 <input type="file" id="files" name="files" multiple accept="image/*" required>
-                <small>Solo se aceptan imágenes (JPG, PNG)</small>
+                <small class="file-info">Solo se aceptan imágenes (JPG, PNG)</small>
             </div>
-            
+
             <button type="submit" name="action" value="upload" class="btn-upload">
                 Subir Imágenes
             </button>
@@ -67,7 +209,7 @@
                     <li>Las imágenes son de rostros claramente visibles</li>
                 </ul>
             </div>
-            <button type="submit" name="action" value="train" class="btn-train" 
+            <button type="submit" name="action" value="train" class="btn-train"
                     {% if not emociones or emociones|length < 2 %}disabled{% endif %}>
                 Iniciar Entrenamiento
             </button>
@@ -87,49 +229,4 @@
         {% endif %}
     {% endwith %}
 </div>
-
-<style>
-    .dataset-status {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 30px;
-    }
-    
-    .emotion-list li {
-        display: flex;
-        justify-content: space-between;
-        padding: 5px 0;
-    }
-    
-    .warning {
-        color: #dc3545;
-        font-weight: bold;
-    }
-    
-    .success {
-        color: #28a745;
-    }
-    
-    .btn-train {
-        background-color: #28a745;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    
-    .btn-train:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-    }
-    
-    .requirements-box {
-        background: #e9ecef;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-    }
-</style>
 {% endblock %}
